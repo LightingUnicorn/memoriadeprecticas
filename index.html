@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memoria de Prácticas | En Alta Agency</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            bgPrimary: '#e5c0ff',
+                            bgSecondary: '#ffffff',
+                            titlePrimary: '#2e0848',
+                            titleSecondary: '#294bb1',
+                            textMain: '#000000',
+                            accent: '#5a3376',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --cursor-size: 20px;
+        }
+
+        body {
+            background-color: theme('colors.brand.bgSecondary');
+            color: theme('colors.brand.textMain');
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.brand.bgSecondary');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.brand.accent');
+            border-radius: 4px;
+        }
+
+        /* Typography Utilities */
+        .text-outline {
+            color: transparent;
+            -webkit-text-stroke: 1px theme('colors.brand.titleSecondary');
+        }
+        .text-outline-marquee {
+            color: theme('colors.brand.titlePrimary');
+            -webkit-text-fill-color: theme('colors.brand.titlePrimary');
+            -webkit-text-stroke: 1px theme('colors.brand.titlePrimary');
+            transition: all 0.4s ease;
+        }
+        .text-outline-marquee:hover {
+            -webkit-text-fill-color: transparent;
+            -webkit-text-stroke: 1.5px theme('colors.brand.titleSecondary');
+        }
+
+        /* Shader Background */
+        #shader-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 1; 
+            pointer-events: none;
+            mix-blend-mode: normal; 
+        }
+
+        /* Custom Cursor */
+        #cursor-dot, #cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        #cursor-dot {
+            width: 6px;
+            height: 6px;
+            background-color: theme('colors.brand.accent');
+        }
+        #cursor-ring {
+            width: 30px;
+            height: 30px;
+            border: 1px solid theme('colors.brand.titlePrimary');
+            transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease;
+        }
+        .hover-target:hover ~ #cursor-ring,
+        a:hover ~ #cursor-ring,
+        button:hover ~ #cursor-ring,
+        iframe:hover ~ #cursor-ring {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(90, 51, 118, 0.05); 
+            border-color: theme('colors.brand.accent');
+        }
+
+        /* Marquee Animation */
+        .marquee-container {
+            display: flex;
+            width: 200%;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(90, 51, 118, 0.15); 
+        }
+
+        .reveal-up { opacity: 0; transform: translateY(40px); }
+
+        /* Navigation Active State */
+        .nav-link.active {
+            color: theme('colors.brand.accent');
+            border-bottom: 2px solid theme('colors.brand.accent');
+        }
+
+        /* Page Transitions */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-accent selection:text-white flex flex-col min-h-screen">
+
+    <!-- Ambient Shader Background -->
+    <canvas id="shader-canvas"></canvas>
+
+    <!-- Custom Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Navigation Navbar -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-4 bg-brand-bgSecondary/90 backdrop-blur-md border-b border-brand-accent/10 flex flex-col md:flex-row justify-between items-center text-xs md:text-sm tracking-widest uppercase font-sans font-bold text-brand-titlePrimary transition-all">
+        <div class="hover-target cursor-pointer mb-4 md:mb-0" onclick="navigateTo('home')">MEMORIA DE PRÁCTICAS 2026 — En ALTA AGENCY</div>
+        <div class="flex gap-4 md:gap-8 overflow-x-auto w-full md:w-auto justify-center pb-2 md:pb-0">
+            <a href="#home" class="nav-link hover-target hover:text-brand-accent transition-colors pb-1 whitespace-nowrap" data-target="home">Inicio</a>
+            <a href="#calendarios" class="nav-link hover-target hover:text-brand-accent transition-colors pb-1 whitespace-nowrap" data-target="calendarios">Calendarios</a>
+            <a href="#reels" class="nav-link hover-target hover:text-brand-accent transition-colors pb-1 whitespace-nowrap" data-target="reels">Reels</a>
+            <a href="#web" class="nav-link hover-target hover:text-brand-accent transition-colors pb-1 whitespace-nowrap" data-target="web">Desarrollo Web</a>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-grow">
+        <!-- ========================================== -->
+        <!-- PAGE 1: HOME (INDEX)                       -->
+        <!-- ========================================== -->
+        <main id="page-home" class="page active pt-16">
+            <!-- 1. Hero Section -->
+            <header class="min-h-[90vh] flex flex-col justify-center px-6 md:px-12 relative">
+                <div class="max-w-7xl mx-auto w-full pt-10">
+                    <p class="font-sans text-brand-accent uppercase tracking-[0.2em] text-xs md:text-sm mb-6 reveal-up font-bold">Documentación profesional de prácticas</p>
+                    <h1 class="font-display font-bold text-5xl md:text-7xl lg:text-[7vw] leading-[0.9] tracking-tighter uppercase mb-8">
+                        <span class="block text-brand-titlePrimary reveal-up">MARKETING DIGITAL</span>
+                        <span class="block text-outline reveal-up" style="animation-delay: 0.1s;">Y COMUNICACIÓN</span>
+                    </h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12 md:mt-16">
+                        <div class="reveal-up space-y-6">
+                            <p class="font-sans text-base md:text-lg text-brand-textMain leading-relaxed max-w-lg">
+                                Esta memoria recoge mi experiencia profesional durante las prácticas realizadas dentro de En Alta Agency. Una agencia creativa especializada en marketing digital y comunicación estratégica.
+                            </p>
+                            <p class="font-sans text-base md:text-lg text-brand-textMain leading-relaxed max-w-lg">
+                                Durante estos tres meses, he podido trabajar con clientes reales, participando activamente en la planificación de contenidos, diseño y desarrollo web, guionización y apoyo en producción audiovisual y diseño gráfico.
+                            </p>
+                            <p class="font-sans text-base md:text-lg text-brand-textMain leading-relaxed max-w-lg">
+                                Me considero una persona creativa, por lo que no quería hacer de esta memoria una simple recopilación de tareas, por lo que, esta memoria muestra el proceso de aprendizaje y adaptación a un entorno de trabajo real, responsabilidad sobre plazos de entrega y comprensión del funcionamiento interno de una agencia creativa que he desarrollado durante este tiempo y que me han permitido conocer el sector desde dentro.
+                            </p>
+                        </div>
+                        <div class="flex flex-col justify-start text-sm font-sans space-y-6 reveal-up">
+                            <div class="uppercase tracking-wider space-y-2 text-brand-textMain border-l-2 border-brand-accent pl-4 bg-brand-bgPrimary/10 p-4 rounded-r-lg">
+                                <p><span class="text-brand-accent font-bold mr-2">Nombre:</span> Nerea González Martín</p>
+                                <p><span class="text-brand-accent font-bold mr-2">Rol:</span> Prácticas en Marketing Digital y Comunicación</p>
+                                <p><span class="text-brand-accent font-bold mr-2">Agencia:</span> En Alta Agency</p>
+                                <p><span class="text-brand-accent font-bold mr-2">Duración:</span> 11 de noviembre - 18 de febrero</p>
+                            </div>
+                            <p class="font-sans text-sm md:text-base text-brand-textMain leading-relaxed max-w-md">
+                                Durante mis prácticas he participado en la planificación y ejecución de estrategias de contenido digital, diseño de piezas gráficas, diseño y desarrollo web en WordPress , guionización, producción y edición de vídeo para redes sociales, creación de propuestas comerciales para la captación de nuevos clientes y búsqueda de referencias para nuevas campañas.
+                            </p>
+                            <p class="font-sans text-sm md:text-base text-brand-textMain leading-relaxed max-w-md">
+                                He podido trabajar con todo el equipo, tanto con el equipo de cuentas como con el equipo creativo, adaptando mensajes a distintos formatos y plataformas, asegurando coherencia con la identidad de cada marca y cumpliendo los plazos establecidos para cada cliente.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 2. Principales Tareas (Ecosistema) -->
+            <section class="py-24 px-6 md:px-12 bg-brand-bgPrimary z-10 relative border-y border-brand-accent/10">
+                <div class="max-w-7xl mx-auto">
+                    <h2 class="font-display text-4xl md:text-5xl font-bold mb-16 uppercase border-b border-brand-titleSecondary/20 pb-8 text-brand-titleSecondary reveal-up">Principales Tareas</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Tarea 1 -->
+                        <div class="glass p-8 rounded-2xl reveal-up shadow-sm">
+                            <h3 class="font-display text-xl text-brand-accent font-bold mb-4 uppercase">1. Gestión de Calendarios de Contenido</h3>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed mb-4">Planificación y organización de calendarios mensuales para Instagram y LinkedIn en distintas marcas.</p>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed">Mi trabajo consistía en estructurar las publicaciones según los diferentes territorios de marca y objetivos estratégicos del cliente, coordinar “verticales” (temáticas) , adaptar el tono de comunicación y diseño de la publicación a cada plataforma con el fin de asegurar coherencia visual y narrativa.</p>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed mt-4">Este proceso implicaba análisis e investigación previa, redacción de copys alineados con el posicionamiento de marca y revisión junto al equipo de cuentas antes de enviar el calendario al cliente para la revisión final.</p>
+                        </div>
+                        <!-- Tarea 2 -->
+                        <div class="glass p-8 rounded-2xl reveal-up shadow-sm" style="animation-delay: 0.1s;">
+                            <h3 class="font-display text-xl text-brand-accent font-bold mb-4 uppercase">2. Ideación, Guionización y Edición de Reels</h3>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed mb-4">Participación activa en la conceptualización de contenidos audiovisuales para redes sociales.</p>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed">Participé tanto en la generación de ideas, como en la redacción de guiones breves y estructurados para reels de Instagram y TikTok, he trabajado en la adaptación de ideas creativas a mensajes de corta duración.</p>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed mt-4">También he realizado tareas de apoyo en grabaciones y posterior edición en Premiere y Capcut, cuidando ritmo, subtítulos, estructura narrativa y adecuación al formato vertical.</p>
+                        </div>
+                        <!-- Tarea 3 -->
+                        <div class="glass p-8 rounded-2xl reveal-up shadow-sm" style="animation-delay: 0.2s;">
+                            <h3 class="font-display text-xl text-brand-accent font-bold mb-4 uppercase">3. Desarrollo Web en WordPress</h3>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed mb-4">Debido a mi experiencia previa en diseño y desarrollo web, pude aportar valor adicional colaborando en el desarrollo y maquetación de páginas web corporativas.</p>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed">He trabajado en la estructuración de contenidos, organización visual de secciones y ajustes implementados en HTML/CSS para mejorar claridad y experiencia de usuario.</p>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed mt-4">Además de realizar el SEO On-Page etructurando encabezados, metadatos y organización semántica del contenido.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Marketing Digital y Áreas de Responsabilidad -->
+            <section class="py-24 px-6 md:px-12 bg-brand-bgSecondary relative z-10 border-b border-brand-accent/10">
+                <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16">
+                    <div class="lg:w-1/3">
+                        <h2 class="font-display text-4xl md:text-5xl font-bold uppercase sticky top-32 text-brand-titlePrimary reveal-up">Marketing Digital<br><span class="text-outline">y Redes Sociales</span></h2>
+                    </div>
+                    <div class="lg:w-2/3 space-y-12">
+                        <div class="reveal-up border-b border-brand-accent/20 pb-12">
+                            <p class="font-sans text-lg text-brand-textMain leading-relaxed mb-6">
+                                Mi participación dentro de la agencia se centró en lapoyo a tareas de marketing digital, integrando contenido, diseño y desarrollo web.
+                            </p>
+                            <p class="font-sans text-lg text-brand-textMain leading-relaxed">
+                                Trabajando en la adaptación de mensajes a distintos canales, comprendiendo las diferencias entre comunicación B2B y B2C, que me han permitido aplicar criterios estratégicos a la producción diaria de contenido.
+                            </p>
+                        </div>
+
+                        <!-- Role Items List -->
+                        <div class="reveal-up">
+                            <h3 class="font-display text-2xl text-brand-titleSecondary mb-8 uppercase tracking-widest">Áreas de Responsabilidad</h3>
+                            <p class="font-sans text-brand-textMain mb-6">Durante mis prácticas asumí responsabilidades progresivas en:</p>
+                            
+                            <ul class="space-y-4 font-sans text-brand-textMain font-medium">
+                                <li class="flex items-start">
+                                    <span class="text-brand-accent mr-4 mt-1">⯈</span>
+                                    <span>Organización de calendarios mensuales de contenido.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-brand-accent mr-4 mt-1">⯈</span>
+                                    <span>Redacción estratégica de copys adaptados a identidad de marca.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-brand-accent mr-4 mt-1">⯈</span>
+                                    <span>Diseño de piezas gráficas para redes sociales.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-brand-accent mr-4 mt-1">⯈</span>
+                                    <span>Edición de vídeos cortos para Instagram y LinkedIn.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-brand-accent mr-4 mt-1">⯈</span>
+                                    <span>Desarrollo y maquetación de páginas web en WordPress.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-brand-accent mr-4 mt-1">⯈</span>
+                                    <span>Optimización básica SEO On-Page.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Resumen de Apartados (Cards Enlazables) -->
+            <section class="py-24 px-6 md:px-12 bg-brand-bgPrimary relative border-b border-brand-accent/10">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-up">
+                        <h2 class="font-display text-4xl md:text-5xl font-bold uppercase text-brand-titleSecondary">Áreas de<br>Desarrollo</h2>
+                        <p class="font-sans text-brand-textMain max-w-md mt-4 md:mt-0">Explora en detalle cada una de las áreas principales donde he aportado valor durante mi estancia en la agencia.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Card 1 -->
+                        <a href="#calendarios" class="hover-target group glass p-8 rounded-2xl reveal-up shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-brand-accent/20 hover:border-brand-accent cursor-pointer bg-brand-bgSecondary">
+                            <div class="w-12 h-12 rounded-full bg-brand-bgPrimary flex items-center justify-center text-brand-accent mb-6">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <h3 class="font-display text-2xl text-brand-titlePrimary font-bold mb-4 uppercase group-hover:text-brand-accent transition-colors">Calendarios de Contenido</h3>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed mb-8 flex-grow">Planificación estratégica, estructuración visual y redacción de copys para Instagram y LinkedIn en múltiples marcas B2B y B2C.</p>
+                            <span class="font-sans font-bold text-xs uppercase tracking-widest text-brand-accent flex items-center gap-2">Ver proyecto <svg class="w-4 h-4 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></span>
+                        </a>
+                        
+                        <!-- Card 2 -->
+                        <a href="#reels" class="hover-target group glass p-8 rounded-2xl reveal-up shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-brand-accent/20 hover:border-brand-accent cursor-pointer bg-brand-bgSecondary" style="animation-delay: 0.1s;">
+                            <div class="w-12 h-12 rounded-full bg-brand-bgPrimary flex items-center justify-center text-brand-accent mb-6">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <h3 class="font-display text-2xl text-brand-titlePrimary font-bold mb-4 uppercase group-hover:text-brand-accent transition-colors">Producción de Reels</h3>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed mb-8 flex-grow">Ideación, guionización, apoyo en grabación y edición técnica enfocada en retención y dinámicas de redes sociales.</p>
+                            <span class="font-sans font-bold text-xs uppercase tracking-widest text-brand-accent flex items-center gap-2">Ver proyecto <svg class="w-4 h-4 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></span>
+                        </a>
+
+                        <!-- Card 3 -->
+                        <a href="#web" class="hover-target group glass p-8 rounded-2xl reveal-up shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-brand-accent/20 hover:border-brand-accent cursor-pointer bg-brand-bgSecondary" style="animation-delay: 0.2s;">
+                            <div class="w-12 h-12 rounded-full bg-brand-bgPrimary flex items-center justify-center text-brand-accent mb-6">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <h3 class="font-display text-2xl text-brand-titlePrimary font-bold mb-4 uppercase group-hover:text-brand-accent transition-colors">Desarrollo Web</h3>
+                            <p class="font-sans text-brand-textMain text-sm leading-relaxed mb-8 flex-grow">Maquetación front-end en WordPress, estructuración de jerarquías UI/UX y optimización de metadatos SEO On-Page.</p>
+                            <span class="font-sans font-bold text-xs uppercase tracking-widest text-brand-accent flex items-center gap-2">Ver proyecto <svg class="w-4 h-4 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Herramientas y Competencias -->
+            <section class="py-24 px-6 md:px-12 relative z-10 overflow-hidden bg-brand-bgSecondary border-b border-brand-accent/10">
+                <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+                    <div class="lg:w-1/3 reveal-up">
+                        <h2 class="font-display text-4xl md:text-5xl font-bold uppercase mb-6 text-brand-titlePrimary">Herramientas y competencias<br><span class="text-outline">Competencias</span></h2>
+                        <p class="font-sans text-brand-textMain mb-8 leading-relaxed text-lg">Conjunto de habilidades técnicas y estratégicas puestas en práctica durante el periodo en la agencia.</p>
+                    </div>
+                    <div class="lg:w-2/3 grid grid-cols-2 md:grid-cols-3 gap-4 w-full">
+                        <div class="bg-brand-bgPrimary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up"><span class="block font-display font-bold text-base md:text-lg text-brand-titlePrimary">Adobe Illustrator</span></div>
+                        <div class="bg-brand-bgPrimary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.1s;"><span class="block font-display font-bold text-base md:text-lg text-brand-titlePrimary">Premiere Pro / DaVinci</span></div>
+                        <div class="bg-brand-bgPrimary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.2s;"><span class="block font-display font-bold text-base md:text-lg text-brand-titlePrimary">Canva</span></div>
+                        <div class="bg-brand-bgPrimary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.3s;"><span class="block font-display font-bold text-base md:text-lg text-brand-titlePrimary">CapCut</span></div>
+                        <div class="bg-brand-bgPrimary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.4s;"><span class="block font-display font-bold text-base md:text-lg text-brand-titlePrimary">WordPress</span></div>
+                        <div class="bg-brand-bgPrimary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.5s;"><span class="block font-display font-bold text-base md:text-lg text-brand-titlePrimary">HTML/CSS básico</span></div>
+                        <div class="bg-brand-bgPrimary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.6s;"><span class="block font-display font-bold text-base md:text-lg text-brand-titlePrimary">SEO On-Page</span></div>
+                        <div class="bg-brand-bgPrimary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.7s;"><span class="block font-display font-bold text-base md:text-lg text-brand-titlePrimary">Planificación de contenido</span></div>
+                        <div class="bg-brand-bgPrimary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.8s;"><span class="block font-display font-bold text-base md:text-lg text-brand-titlePrimary">Redacción estratégica</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Reflexión y Aprendizaje -->
+            <section class="py-24 px-6 md:px-12 bg-brand-bgPrimary z-10 relative">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="font-display text-4xl md:text-5xl font-bold mb-10 uppercase text-brand-titleSecondary reveal-up">Reflexión y aprendizaje</h2>
+                    
+                    <div class="font-sans text-brand-textMain font-medium text-lg md:text-xl reveal-up space-y-6 text-left md:text-center">
+                        <p>
+                            Durante la carrera he tenido problemas con la estrategia y la investigación, pero durante las prácticas he podido mejorar mis habilidades en estrategia y darme cuenta de que la estrategia va más unida a la creatividad de lo que creía y he comprendido que la creatividad necesita estructura para convertirse en resultados reales.
+                        </p>
+                        <p>
+                            He aprendido a trabajar bajo plazos definidos, a gestionar revisiones constantes y a adaptar propuestas a las necesidades del cliente.
+                        </p>
+                        <p>
+                            Más allá de las habilidades técnicas, esta etapa me ha permitido entender cómo se coordinan estrategia, diseño y ejecución dentro de una agencia, y la importancia del trabajo en equipo en cada proyecto.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ========================================== -->
+        <!-- PAGE 2: CALENDARIOS                        -->
+        <!-- ========================================== -->
+        <main id="page-calendarios" class="page pt-24 pb-20 px-6 md:px-12">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex items-center gap-2 font-sans text-xs font-bold uppercase tracking-widest text-brand-textMain/50 mb-12">
+                    <a href="#home" class="hover:text-brand-accent transition-colors">Inicio</a>
+                    <span>/</span>
+                    <span class="text-brand-accent">Calendarios de Contenido</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
+                    <div class="lg:col-span-1 lg:sticky lg:top-32">
+                        <span class="font-sans text-brand-accent font-bold uppercase tracking-widest text-sm mb-4 block reveal-up">Proyectos Destacados</span>
+                        <h1 class="font-display text-4xl md:text-5xl font-bold mb-8 uppercase text-brand-titlePrimary reveal-up">Calendarios Mensuales<br><span class="text-brand-titleSecondary">de Contenido</span></h1>
+                        <div class="font-sans text-brand-textMain text-base leading-relaxed space-y-4 reveal-up mb-8">
+                            <p>Desarrollo de calendarios estratégicos para distintas marcas, estructurando temáticas, objetivos y formatos.</p>
+                            <p>Mi aportación consistió en transformar ideas generales en publicaciones concretas, alineadas con identidad visual y tono comunicativo, manteniendo coherencia durante todo el mes.</p>
+                        </div>
+                        <a href="#home" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-accent hover:text-brand-titlePrimary transition-colors reveal-up">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                            Volver a inicio
+                        </a>
+                    </div>
+
+                    <!-- Interactive Module -->
+                    <div class="lg:col-span-2 reveal-up">
+                        <div class="w-full bg-brand-bgSecondary rounded-3xl border border-brand-accent/20 shadow-xl p-4 md:p-6 lg:p-8">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-6 pb-6 border-b border-brand-accent/10">
+                                <div class="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-full bg-brand-bgPrimary flex items-center justify-center border border-brand-accent/20 text-brand-titlePrimary shadow-inner">
+                                    <svg class="w-8 h-8 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <div class="flex-1 w-full">
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-2">
+                                        <h4 class="font-display font-bold text-lg sm:text-xl text-brand-titlePrimary">Calendarios — Alta Agency</h4>
+                                        <button class="w-full sm:w-auto px-4 py-1.5 border border-brand-accent/30 rounded-lg text-xs font-bold text-brand-titleSecondary hover:bg-brand-bgPrimary transition-colors">Vista de Ejemplos</button>
+                                    </div>
+                                    <div class="flex gap-4 sm:gap-6 text-xs sm:text-sm font-sans font-bold mb-2">
+                                        <span class="text-brand-titlePrimary">Publicaciones</span>
+                                        <span class="text-brand-titlePrimary">Marcas</span>
+                                        <span class="text-brand-titlePrimary">Formatos</span>
+                                    </div>
+                                    <p class="text-xs sm:text-sm font-sans text-brand-textMain">Planificación mensual · Instagram y LinkedIn · coherencia de marca</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                                <button class="grid-item group relative w-full aspect-square overflow-hidden rounded-xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-sm hover:shadow-md cursor-pointer"
+                                        data-index="0" data-title="Estrategia Visual" data-desc="Visión global del grid para asegurar coherencia estética de la marca durante todo el mes." data-role="Dirección de Arte" data-src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Grid">
+                                    <div class="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span class="bg-white/95 text-brand-titlePrimary px-3 py-1.5 rounded-md font-display font-bold text-xs uppercase shadow-sm">Parrilla</span>
+                                    </div>
+                                </button>
+                                <button class="grid-item group relative w-full aspect-square overflow-hidden rounded-xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-sm hover:shadow-md cursor-pointer"
+                                        data-index="1" data-title="Contenido Educativo" data-desc="Diseño de carruseles informativos, traduciendo conceptos." data-role="Diseño y Copywriting" data-src="https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=1000&auto=format&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Grid">
+                                    <div class="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span class="bg-white/95 text-brand-titlePrimary px-3 py-1.5 rounded-md font-display font-bold text-xs uppercase shadow-sm">Carrusel</span>
+                                    </div>
+                                </button>
+                                <button class="grid-item group relative w-full aspect-square overflow-hidden rounded-xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-sm hover:shadow-md cursor-pointer"
+                                        data-index="2" data-title="Posicionamiento B2B" data-desc="Adaptación de contenido corporativo a formatos visuales enfocados en LinkedIn." data-role="Estrategia LinkedIn" data-src="https://images.unsplash.com/photo-1616469829581-73993eb86b02?q=80&w=1000&auto=format&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1616469829581-73993eb86b02?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Grid">
+                                    <div class="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span class="bg-white/95 text-brand-titlePrimary px-3 py-1.5 rounded-md font-display font-bold text-xs uppercase shadow-sm">LinkedIn</span>
+                                    </div>
+                                </button>
+                                <button class="grid-item group relative w-full aspect-square overflow-hidden rounded-xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-sm hover:shadow-md cursor-pointer"
+                                        data-index="3" data-title="Dinámica de Audiencia" data-desc="Creación de secuencias rápidas para historias diarias." data-role="Diseño de Plantillas" data-src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=1000&auto=format&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Grid">
+                                    <div class="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span class="bg-white/95 text-brand-titlePrimary px-3 py-1.5 rounded-md font-display font-bold text-xs uppercase shadow-sm">Historias</span>
+                                    </div>
+                                </button>
+                                <button class="grid-item group relative w-full aspect-square overflow-hidden rounded-xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-sm hover:shadow-md cursor-pointer"
+                                        data-index="4" data-title="Campañas Cortas" data-desc="Guionización y estructura de contenido enfocado en retención." data-role="Guión y Formato" data-src="https://images.unsplash.com/photo-1585644677464-320d57d74dbb?q=80&w=1000&auto=format&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1585644677464-320d57d74dbb?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Grid">
+                                    <div class="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span class="bg-white/95 text-brand-titlePrimary px-3 py-1.5 rounded-md font-display font-bold text-xs uppercase shadow-sm">Reel</span>
+                                    </div>
+                                </button>
+                                <button class="grid-item group relative w-full aspect-square overflow-hidden rounded-xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-sm hover:shadow-md cursor-pointer"
+                                        data-index="5" data-title="Análisis de Rendimiento" data-desc="Revisión a final de mes de las métricas de engagement." data-role="Analítica" data-src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Grid">
+                                    <div class="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span class="bg-white/95 text-brand-titlePrimary px-3 py-1.5 rounded-md font-display font-bold text-xs uppercase shadow-sm">Métricas</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ========================================== -->
+        <!-- PAGE 3: REELS                              -->
+        <!-- ========================================== -->
+        <main id="page-reels" class="page pt-24 pb-20 px-6 md:px-12">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex items-center gap-2 font-sans text-xs font-bold uppercase tracking-widest text-brand-textMain/50 mb-12">
+                    <a href="#home" class="hover:text-brand-accent transition-colors">Inicio</a>
+                    <span>/</span>
+                    <span class="text-brand-accent">Producción Audiovisual</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
+                    <div class="lg:col-span-1 lg:sticky lg:top-32">
+                        <span class="font-sans text-brand-accent font-bold uppercase tracking-widest text-sm mb-4 block reveal-up">Proyectos Destacados</span>
+                        <h1 class="font-display text-4xl md:text-5xl font-bold mb-8 uppercase text-brand-titlePrimary reveal-up">Producción<br><span class="text-brand-titleSecondary">Audiovisual</span></h1>
+                        <div class="font-sans text-brand-textMain text-base leading-relaxed space-y-4 reveal-up mb-8">
+                            <p>Colaboración en la ideación y edición de vídeos para redes sociales.</p>
+                            <p>Desde la redacción de guion hasta la edición final, cuidando ritmo, formato vertical y adaptación al público objetivo.</p>
+                        </div>
+                        <a href="#home" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-accent hover:text-brand-titlePrimary transition-colors reveal-up">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                            Volver a inicio
+                        </a>
+                    </div>
+
+                    <div class="lg:col-span-2 reveal-up">
+                        <h3 class="font-display font-bold text-2xl text-brand-titleSecondary mb-8 border-b border-brand-accent/20 pb-4">Galería de Ejemplos</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                            <button class="grid-item group relative w-full aspect-[9/16] overflow-hidden rounded-2xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-md hover:shadow-xl cursor-pointer border border-brand-accent/10"
+                                    data-index="0" data-title="Reel Educativo B2B" data-desc="Guion y edición dinámica para mantener la atención explicando servicios corporativos." data-role="Edición (Premiere)" data-src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=1000&auto=format&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Video">
+                                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                                    <div class="w-12 h-12 rounded-full bg-white/90 text-brand-accent flex items-center justify-center pl-1 shadow-lg group-hover:scale-110 transition-transform">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                </div>
+                            </button>
+                            <button class="grid-item group relative w-full aspect-[9/16] overflow-hidden rounded-2xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-md hover:shadow-xl cursor-pointer border border-brand-accent/10"
+                                    data-index="1" data-title="Campaña Producto" data-desc="Apoyo en grabación y ajuste de ritmo en edición mediante CapCut." data-role="Grabación y Edición" data-src="https://images.unsplash.com/photo-1585644677464-320d57d74dbb?q=80&w=1000&auto=format&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1585644677464-320d57d74dbb?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Video">
+                                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                                    <div class="w-12 h-12 rounded-full bg-white/90 text-brand-accent flex items-center justify-center pl-1 shadow-lg group-hover:scale-110 transition-transform">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                </div>
+                            </button>
+                            <button class="grid-item group relative w-full aspect-[9/16] overflow-hidden rounded-2xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-md hover:shadow-xl cursor-pointer border border-brand-accent/10"
+                                    data-index="2" data-title="Cobertura Evento" data-desc="Resumen rápido de evento corporativo optimizado para formato vertical." data-role="Guionización" data-src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=1000&auto=format&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Video">
+                                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                                    <div class="w-12 h-12 rounded-full bg-white/90 text-brand-accent flex items-center justify-center pl-1 shadow-lg group-hover:scale-110 transition-transform">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ========================================== -->
+        <!-- PAGE 4: WEB                                -->
+        <!-- ========================================== -->
+        <main id="page-web" class="page pt-24 pb-20 px-6 md:px-12">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex items-center gap-2 font-sans text-xs font-bold uppercase tracking-widest text-brand-textMain/50 mb-12">
+                    <a href="#home" class="hover:text-brand-accent transition-colors">Inicio</a>
+                    <span>/</span>
+                    <span class="text-brand-accent">Desarrollo Web (Udoloc)</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
+                    <div class="lg:col-span-1 lg:sticky lg:top-32">
+                        <span class="font-sans text-brand-accent font-bold uppercase tracking-widest text-sm mb-4 block reveal-up">Proyectos Destacados</span>
+                        <h1 class="font-display text-4xl md:text-5xl font-bold mb-8 uppercase text-brand-titlePrimary reveal-up">Desarrollo Web<br><span class="text-brand-titleSecondary">— Udoloc</span></h1>
+                        <div class="font-sans text-brand-textMain text-base leading-relaxed space-y-4 reveal-up mb-8">
+                            <p>Participación en la estructuración y maquetación de la web de Udoloc.</p>
+                            <p>Trabajé en la organización de contenidos, mejora de jerarquía visual y aplicación de criterios básicos de SEO para facilitar indexación y claridad de navegación.</p>
+                        </div>
+                        <a href="#home" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-accent hover:text-brand-titlePrimary transition-colors reveal-up">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                            Volver a inicio
+                        </a>
+                    </div>
+
+                    <div class="lg:col-span-2 reveal-up">
+                        <div class="w-full rounded-2xl shadow-2xl border border-brand-accent/20 bg-brand-bgSecondary overflow-hidden flex flex-col relative">
+                            <div class="bg-brand-bgPrimary/30 border-b border-brand-accent/10 px-4 py-3 flex items-center justify-between z-30">
+                                <div class="flex gap-2 w-20">
+                                    <div class="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/50"></div>
+                                    <div class="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]/50"></div>
+                                    <div class="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]/50"></div>
+                                </div>
+                                <div class="flex-1 max-w-lg bg-brand-bgSecondary/90 backdrop-blur-sm border border-brand-accent/10 rounded-md py-1.5 px-4 flex items-center justify-center gap-2 mx-4 text-sm font-sans text-brand-titlePrimary shadow-inner">
+                                    <svg class="w-3.5 h-3.5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                    <span class="truncate">https://udoloc.es</span>
+                                </div>
+                                <div class="flex gap-2 w-20 justify-end text-brand-titlePrimary">
+                                    <button onclick="reloadMockupIframe()" class="p-1.5 hover:bg-brand-accent/10 hover:text-brand-accent rounded transition-colors focus:outline-none focus:ring-2 focus:ring-brand-accent" title="Recargar vista previa">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                    </button>
+                                    <a href="https://udoloc.es" target="_blank" rel="noopener noreferrer" class="p-1.5 hover:bg-brand-accent/10 hover:text-brand-accent rounded transition-colors focus:outline-none focus:ring-2 focus:ring-brand-accent" title="Abrir en nueva pestaña">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="relative w-full h-[60vh] bg-brand-bgPrimary/5">
+                                <div id="udoloc-fallback" class="absolute inset-0 hidden flex-col items-center justify-center bg-brand-bgSecondary z-10 p-6 text-center">
+                                    <div class="w-full h-full absolute inset-0 opacity-5 bg-[url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
+                                    <div class="relative z-20 flex flex-col items-center">
+                                        <div class="w-14 h-14 rounded-full bg-brand-bgPrimary flex items-center justify-center mb-4 text-brand-titlePrimary border border-brand-accent/20 shadow-sm">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                        </div>
+                                        <h4 class="font-display font-bold text-xl text-brand-titlePrimary mb-2">Vista previa protegida</h4>
+                                        <p class="font-sans text-sm text-brand-textMain/70 mb-6 max-w-sm">La política de seguridad de la web (CORS) impide cargarla dentro de este marco demostrativo.</p>
+                                        <a href="https://udoloc.es" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white rounded-lg text-sm font-bold hover:bg-brand-titlePrimary transition-colors shadow-md">
+                                            <span>Abrir web oficial en nueva pestaña</span>
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                        </a>
+                                    </div>
+                                </div>
+                                <iframe id="udoloc-iframe" src="https://udoloc.es" class="absolute inset-0 w-full h-full border-0 z-20 bg-white" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+                                <div id="udoloc-loader" class="absolute inset-0 flex items-center justify-center bg-brand-bgSecondary z-30 transition-opacity duration-300">
+                                    <div class="flex flex-col items-center gap-3">
+                                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-accent"></div>
+                                        <span class="text-xs font-sans font-bold text-brand-accent uppercase tracking-widest animate-pulse">Cargando...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Global Marquee (Banner en Movimiento) -->
+    <div class="w-full bg-brand-bgSecondary overflow-hidden relative shadow-lg border-y border-brand-accent/20 py-10">
+        <div class="marquee-container text-3xl md:text-5xl font-display font-bold uppercase tracking-wider text-outline-marquee whitespace-nowrap">
+            <span class="px-8">Marketing Digital</span> • <span class="px-8">Desarrollo Web</span> • <span class="px-8">Producción Audiovisual</span> • <span class="px-8">Marketing Digital</span> • <span class="px-8">Desarrollo Web</span> • <span class="px-8">Producción Audiovisual</span> • 
+        </div>
+    </div>
+
+    <!-- Global Footer -->
+    <footer class="px-6 md:px-12 py-8 bg-brand-bgPrimary border-t border-brand-accent/20">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-xs font-sans text-brand-accent font-bold uppercase tracking-widest gap-4 text-center md:text-left">
+            <div>© 2026 Memoria de Prácticas</div>
+            <div class="md:text-right">Nerea González Martín<br>En Alta Agency</div>
+        </div>
+    </footer>
+
+    <!-- Global Lightbox Modal -->
+    <div id="lightbox-modal" class="fixed inset-0 z-[10000] hidden bg-brand-bgSecondary/95 backdrop-blur-md flex items-center justify-center p-4 md:p-8 opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+        <button id="lightbox-close" class="absolute top-4 right-4 md:top-8 md:right-8 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-brand-bgPrimary/80 text-brand-titlePrimary hover:bg-brand-bgPrimary transition-colors focus:outline-none focus:ring-2 focus:ring-brand-accent z-50 shadow-sm" aria-label="Cerrar modal">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+
+        <button id="lightbox-prev" class="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-brand-bgPrimary/80 text-brand-titlePrimary hover:bg-brand-bgPrimary transition-colors focus:outline-none focus:ring-2 focus:ring-brand-accent z-50 shadow-sm" aria-label="Anterior">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+
+        <button id="lightbox-next" class="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-brand-bgPrimary/80 text-brand-titlePrimary hover:bg-brand-bgPrimary transition-colors focus:outline-none focus:ring-2 focus:ring-brand-accent z-50 shadow-sm" aria-label="Siguiente">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+
+        <div class="relative w-full max-w-4xl max-h-[85vh] flex flex-col md:flex-row bg-white rounded-2xl shadow-2xl overflow-hidden border border-brand-accent/20" id="lightbox-content">
+            <div class="w-full md:w-3/5 h-48 md:h-[65vh] bg-brand-bgPrimary/10 flex items-center justify-center overflow-hidden">
+                <img id="lightbox-img" src="" alt="" class="w-full h-full object-contain">
+            </div>
+            <div class="w-full md:w-2/5 p-6 md:p-10 flex flex-col justify-center bg-white border-t md:border-t-0 md:border-l border-brand-accent/10 overflow-y-auto">
+                <span id="lightbox-role" class="text-xs font-sans font-bold text-brand-accent uppercase tracking-widest mb-3">Rol</span>
+                <h4 id="lightbox-title" class="font-display font-bold text-2xl md:text-3xl text-brand-titlePrimary mb-4 leading-tight">Título</h4>
+                <p id="lightbox-desc" class="font-sans text-brand-textMain text-sm md:text-base leading-relaxed">Descripción</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        // --- Single Page Application (SPA) Router Logic ---
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.getElementById('page-' + pageId);
+            if(targetPage) {
+                targetPage.classList.add('active');
+            } else {
+                document.getElementById('page-home').classList.add('active');
+                pageId = 'home';
+            }
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if(link.getAttribute('data-target') === pageId) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            window.location.hash = pageId;
+            window.scrollTo(0, 0);
+            initAnimations();
+        }
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.replace('#', '') || 'home';
+            navigateTo(hash);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialHash = window.location.hash.replace('#', '') || 'home';
+            navigateTo(initialHash);
+        });
+
+        // --- Animations Init ---
+        function initAnimations() {
+            ScrollTrigger.getAll().forEach(t => t.kill());
+            gsap.set('.page.active .reveal-up', {y: 40, opacity: 0, clearProps: "all"});
+
+            document.querySelectorAll('.page.active .reveal-up').forEach((el) => {
+                gsap.to(el, {
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 85%",
+                        toggleActions: "play none none reverse"
+                    },
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power3.out"
+                });
+            });
+
+            const counters = document.querySelectorAll('.page.active .counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                let current = { val: 0 };
+                gsap.to(current, {
+                    scrollTrigger: {
+                        trigger: counter,
+                        start: "top 85%",
+                    },
+                    val: target,
+                    duration: 2,
+                    ease: "power2.out",
+                    onUpdate: function() {
+                        counter.innerHTML = Math.floor(current.val);
+                    }
+                });
+            });
+            
+            ScrollTrigger.refresh();
+        }
+
+        // --- Shader Background ---
+        const canvas = document.getElementById('shader-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let time = 0;
+        function resizeCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        function drawShader() {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            const cx1 = width * 0.5 + Math.sin(time * 0.5) * width * 0.3;
+            const cy1 = height * 0.5 + Math.cos(time * 0.3) * height * 0.3;
+            const cx2 = width * 0.8 + Math.cos(time * 0.4) * width * 0.2;
+            const cy2 = height * 0.8 + Math.sin(time * 0.6) * height * 0.2;
+            const grd1 = ctx.createRadialGradient(cx1, cy1, 0, cx1, cy1, width * 0.6);
+            grd1.addColorStop(0, 'rgba(229, 192, 255, 0.7)'); grd1.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = grd1; ctx.fillRect(0, 0, width, height);
+            const grd2 = ctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, width * 0.5);
+            grd2.addColorStop(0, 'rgba(229, 192, 255, 0.4)'); grd2.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = grd2; ctx.fillRect(0, 0, width, height);
+            time += 0.01; requestAnimationFrame(drawShader);
+        }
+        drawShader();
+
+        // --- Custom Cursor ---
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorRing = document.getElementById('cursor-ring');
+        window.addEventListener('mousemove', (e) => {
+            cursorDot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            setTimeout(() => { cursorRing.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`; }, 50);
+        });
+
+        // --- Lightbox Global Logic ---
+        const modal = document.getElementById('lightbox-modal');
+        const modalContent = document.getElementById('lightbox-content');
+        const modalImg = document.getElementById('lightbox-img');
+        const modalTitle = document.getElementById('lightbox-title');
+        const modalDesc = document.getElementById('lightbox-desc');
+        const modalRole = document.getElementById('lightbox-role');
+        const btnClose = document.getElementById('lightbox-close');
+        const btnNext = document.getElementById('lightbox-next');
+        const btnPrev = document.getElementById('lightbox-prev');
+
+        let currentItemIndex = 0;
+        let currentGridItems = []; 
+
+        function openModal(item, itemsArray) {
+            window.isModalOpen = true;
+            currentGridItems = itemsArray;
+            currentItemIndex = Array.from(itemsArray).indexOf(item);
+            
+            updateModalContent();
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            document.body.style.overflow = 'hidden';
+            modalContent.focus();
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                window.isModalOpen = false;
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        function updateModalContent() {
+            const item = currentGridItems[currentItemIndex];
+            modalImg.src = item.getAttribute('data-src');
+            modalTitle.textContent = item.getAttribute('data-title');
+            modalDesc.textContent = item.getAttribute('data-desc');
+            modalRole.textContent = item.getAttribute('data-role');
+        }
+
+        function nextItem() { currentItemIndex = (currentItemIndex + 1) % currentGridItems.length; updateModalContent(); }
+        function prevItem() { currentItemIndex = (currentItemIndex - 1 + currentGridItems.length) % currentGridItems.length; updateModalContent(); }
+
+        document.body.addEventListener('click', (e) => {
+            const gridItem = e.target.closest('.grid-item');
+            if (gridItem) {
+                const activePageItems = document.querySelectorAll('.page.active .grid-item');
+                openModal(gridItem, activePageItems);
+            }
+        });
+
+        btnClose.addEventListener('click', closeModal);
+        btnNext.addEventListener('click', (e) => { e.stopPropagation(); nextItem(); });
+        btnPrev.addEventListener('click', (e) => { e.stopPropagation(); prevItem(); });
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        modalContent.addEventListener('click', (e) => { e.stopPropagation(); });
+
+        document.addEventListener('keydown', (e) => {
+            if (!window.isModalOpen) return;
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowRight') nextItem();
+            if (e.key === 'ArrowLeft') prevItem();
+        });
+
+        // --- Iframe Logic ---
+        function reloadMockupIframe() {
+            const iframe = document.getElementById('udoloc-iframe');
+            const loader = document.getElementById('udoloc-loader');
+            if (iframe) {
+                if (loader) { loader.style.display = 'flex'; setTimeout(() => loader.style.opacity = '1', 10); }
+                iframe.src = iframe.src;
+            }
+        }
+
+        const udolocIframe = document.getElementById('udoloc-iframe');
+        const udolocLoader = document.getElementById('udoloc-loader');
+        const udolocFallback = document.getElementById('udoloc-fallback');
+
+        if (udolocIframe) {
+            let iframeLoaded = false;
+            udolocIframe.addEventListener('load', function() {
+                iframeLoaded = true;
+                if (udolocLoader) { udolocLoader.style.opacity = '0'; setTimeout(() => { udolocLoader.style.display = 'none'; }, 300); }
+                try {
+                    const loc = udolocIframe.contentWindow.location.href;
+                    if (loc === 'about:blank' || loc === '') showFallback();
+                } catch(e) {}
+            });
+            setTimeout(() => { if (!iframeLoaded) { if (udolocLoader) { udolocLoader.style.opacity = '0'; setTimeout(() => { udolocLoader.style.display = 'none'; }, 300); } showFallback(); } }, 8000);
+            function showFallback() {
+                if (udolocFallback && udolocIframe) {
+                    udolocFallback.classList.remove('hidden');
+                    udolocFallback.classList.add('flex');
+                    udolocIframe.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
