@@ -45,7 +45,6 @@
             background-color: theme('colors.brand.bgSecondary');
             color: theme('colors.brand.textMain');
             overflow-x: hidden;
-            cursor: none;
         }
 
         /* Custom Scrollbar */
@@ -89,36 +88,7 @@
             mix-blend-mode: normal; 
         }
 
-        /* Custom Cursor */
-        #cursor-dot, #cursor-ring {
-            position: fixed;
-            top: 0;
-            left: 0;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-        }
-        #cursor-dot {
-            width: 6px;
-            height: 6px;
-            background-color: theme('colors.brand.accent');
-        }
-        #cursor-ring {
-            width: 30px;
-            height: 30px;
-            border: 1px solid theme('colors.brand.titlePrimary');
-            transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease;
-        }
-        .hover-target:hover ~ #cursor-ring,
-        a:hover ~ #cursor-ring,
-        button:hover ~ #cursor-ring,
-        iframe:hover ~ #cursor-ring {
-            width: 50px;
-            height: 50px;
-            background-color: rgba(90, 51, 118, 0.05); 
-            border-color: theme('colors.brand.accent');
-        }
+
 
         /* Marquee Animation */
         .marquee-container {
@@ -166,10 +136,6 @@
     <!-- Ambient Shader Background -->
     <canvas id="shader-canvas"></canvas>
 
-    <!-- Custom Cursor -->
-    <div id="cursor-dot"></div>
-    <div id="cursor-ring"></div>
-
     <!-- Navigation Navbar -->
     <nav class="fixed top-0 left-0 w-full z-50 px-6 py-4 bg-brand-bgSecondary/90 backdrop-blur-md border-b border-brand-accent/10 flex flex-col md:flex-row justify-between items-center text-xs md:text-sm tracking-widest uppercase font-sans font-bold text-brand-titlePrimary transition-all">
         <div class="hover-target cursor-pointer mb-4 md:mb-0" onclick="navigateTo('home')">MEMORIA DE PRÁCTICAS 2026 — En ALTA AGENCY</div>
@@ -204,7 +170,7 @@
                                 Durante estos tres meses, he podido trabajar con clientes reales, participando activamente en la planificación de contenidos, diseño y desarrollo web, guionización y apoyo en producción audiovisual y diseño gráfico.
                             </p>
                             <p class="font-sans text-base md:text-lg text-brand-textMain leading-relaxed max-w-lg">
-                                Me considero una persona creativa, por lo que no quería hacer de esta memoria una simple recopilación de tareas, por lo que, esta memoria muestra el proceso de aprendizaje y adaptación a un entorno de trabajo real, responsabilidad sobre plazos de entrega y comprensión del funcionamiento interno de una agencia creativa que he desarrollado durante este tiempo y que me han permitido conocer el sector desde dentro.
+                                No quería que esta memoria sea una simple recopilación de tareas, por lo que tras pensar, decidí que quería mostrar el proceso de aprendizaje y adaptación a un entorno de trabajo real que había aprendido durante mi periodo en En Alta Agency
                             </p>
                         </div>
                         <div class="flex flex-col justify-start text-sm font-sans space-y-6 reveal-up">
@@ -213,19 +179,179 @@
                                 <p><span class="text-brand-accent font-bold mr-2">Rol:</span> Prácticas en Marketing Digital y Comunicación</p>
                                 <p><span class="text-brand-accent font-bold mr-2">Agencia:</span> En Alta Agency</p>
                                 <p><span class="text-brand-accent font-bold mr-2">Duración:</span> 11 de noviembre - 18 de febrero</p>
+                                <p><span class="text-brand-accent font-bold mr-2">Profesora-tutora:</span> Eva Breva Franch</p>
+                                <p><span class="text-brand-accent font-bold mr-2">Supervisor:</span> Manuel Llopis Ramírez</p>
                             </div>
-                            <p class="font-sans text-sm md:text-base text-brand-textMain leading-relaxed max-w-md">
-                                Durante mis prácticas he participado en la planificación y ejecución de estrategias de contenido digital, diseño de piezas gráficas, diseño y desarrollo web en WordPress , guionización, producción y edición de vídeo para redes sociales, creación de propuestas comerciales para la captación de nuevos clientes y búsqueda de referencias para nuevas campañas.
-                            </p>
-                            <p class="font-sans text-sm md:text-base text-brand-textMain leading-relaxed max-w-md">
-                                He podido trabajar con todo el equipo, tanto con el equipo de cuentas como con el equipo creativo, adaptando mensajes a distintos formatos y plataformas, asegurando coherencia con la identidad de cada marca y cumpliendo los plazos establecidos para cada cliente.
-                            </p>
+                            <!-- Imagen de presentación -->
+                            <div class="w-full rounded-xl overflow-hidden border border-brand-accent/20 shadow-md reveal-up">
+                                <img src="images/foto-agencia.jpg" alt="En Alta Agency" class="w-full h-48 object-cover">
+                            </div>
+                        </div>
+                    </div>
+           
+                </div>
+            
+
+            </header>
+
+            <!-- 2. Datos de la Empresa -->
+            <section class="py-24 px-6 md:px-12 bg-brand-bgPrimary relative z-10 border-b border-brand-accent/10">
+                <div class="max-w-7xl mx-auto">
+                    <h2 class="font-display text-4xl md:text-5xl font-bold mb-16 uppercase border-b border-brand-titleSecondary/20 pb-8 text-brand-titlePrimary reveal-up">Datos de la Empresa</h2>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                        <!-- Actividades principales -->
+                        <div class="reveal-up lg:col-span-2">
+                            <h3 class="font-display text-2xl text-brand-titleSecondary font-bold mb-4 uppercase">Actividades principales</h3>
+                            <p class="font-sans text-base md:text-lg text-brand-textMain leading-relaxed mb-8">En Alta Agency es una agencia de publicidad especializada en marketing digital. Su actividad se centra en desarrollar estrategias orientadas a mejorar el posicionamiento, la visibilidad y la conexión emocional entre las empresas y su público objetivo. Entre sus principales actividades se encuentran las siguientes:</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="bg-brand-bgSecondary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.05s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Gestión de redes sociales</span></div>
+                                <div class="bg-brand-bgSecondary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.1s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Contenidos digitales</span></div>
+                                <div class="bg-brand-bgSecondary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.15s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Producción audiovisual</span></div>
+                                <div class="bg-brand-bgSecondary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.2s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Diseño gráfico e identidad visual</span></div>
+                                <div class="bg-brand-bgSecondary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.25s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Desarrollo web</span></div>
+                                <div class="bg-brand-bgSecondary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.3s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Campañas publicitarias</span></div>
+                                <div class="bg-brand-bgSecondary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.35s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Influencers y KOL’s</span></div>
+                                <div class="bg-brand-bgSecondary p-4 md:p-6 rounded-lg text-center hover:shadow-md border border-brand-accent/10 transition-all reveal-up" style="animation-delay: 0.4s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">MetaADS</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Sistema de trabajo -->
+                        <div class="reveal-up lg:col-span-2 border-t border-brand-accent/10 pt-12 mt-4">
+                            <h3 class="font-display text-2xl text-brand-titleSecondary font-bold mb-6 uppercase">Sistema de trabajo y toma de decisiones</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                                <div class="space-y-4 font-sans text-base md:text-lg text-brand-textMain leading-relaxed">
+                                    <p>El sistema de trabajo de la agencia se basa en una mezcla entre trabajo individual y colaboración entre los miembros del equipo, ya que está orientada a proyectos. Cada cliente dispone de una planificación mensual en la que se definen:</p>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start gap-3"><span class="text-brand-accent mt-1">⯈</span><span>Objetivos de comunicación.</span></li>
+                                        <li class="flex items-start gap-3"><span class="text-brand-accent mt-1">⯈</span><span>Tipo de contenidos.</span></li>
+                                        <li class="flex items-start gap-3"><span class="text-brand-accent mt-1">⯈</span><span>Formatos.</span></li>
+                                        <li class="flex items-start gap-3"><span class="text-brand-accent mt-1">⯈</span><span>Calendario de publicación.</span></li>
+                                    </ul>
+                                    <p>Por tanto, se establece una fecha mensual en la que se debe tener listo el contenido de cada cuenta para enviar al cliente, ser verificado y estar listo para publicar durante el mes.</p>
+                                    <p>Además se mantiene una comunicación constante, revisión diaria/semanal de propuestas y adaptación continua en función de la respuesta del público, las necesidades del cliente y los objetivos marcados.</p>
+                                </div>
+                                <div class="space-y-4 font-sans text-base md:text-lg text-brand-textMain leading-relaxed">
+                                    <p>La toma de decisiones se lleva a cabo teniendo en cuenta diferentes factores:</p>
+                                    <!-- Timeline -->
+                                    <div class="relative mt-6">
+                                        <!-- Línea vertical -->
+                                        <div class="absolute left-5 top-0 bottom-0 w-0.5 bg-brand-accent/30"></div>
+                                        <div class="space-y-6">
+                                            <div class="relative flex items-start gap-6 reveal-up" style="animation-delay: 0.1s">
+                                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-brand-accent text-white font-display font-bold text-sm flex items-center justify-center z-10 shadow-md">1</div>
+                                                <div class="bg-brand-bgSecondary/60 border border-brand-accent/15 rounded-xl p-4 flex-1">
+                                                    <p class="font-display font-bold text-brand-titlePrimary text-sm md:text-base">Análisis estratégico previo</p>
+                                                    <p class="font-sans text-brand-textMain text-sm mt-1">En base a las necesidades del cliente.</p>
+                                                </div>
+                                            </div>
+                                            <div class="relative flex items-start gap-6 reveal-up" style="animation-delay: 0.2s">
+                                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-brand-accent text-white font-display font-bold text-sm flex items-center justify-center z-10 shadow-md">2</div>
+                                                <div class="bg-brand-bgSecondary/60 border border-brand-accent/15 rounded-xl p-4 flex-1">
+                                                    <p class="font-display font-bold text-brand-titlePrimary text-sm md:text-base">Propuesta creativa</p>
+                                                    <p class="font-sans text-brand-textMain text-sm mt-1">Desarrollada por el equipo.</p>
+                                                </div>
+                                            </div>
+                                            <div class="relative flex items-start gap-6 reveal-up" style="animation-delay: 0.3s">
+                                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-brand-accent text-white font-display font-bold text-sm flex items-center justify-center z-10 shadow-md">3</div>
+                                                <div class="bg-brand-bgSecondary/60 border border-brand-accent/15 rounded-xl p-4 flex-1">
+                                                    <p class="font-display font-bold text-brand-titlePrimary text-sm md:text-base">Revisión interna</p>
+                                                    <p class="font-sans text-brand-textMain text-sm mt-1">Validación del equipo antes de presentar.</p>
+                                                </div>
+                                            </div>
+                                            <div class="relative flex items-start gap-6 reveal-up" style="animation-delay: 0.4s">
+                                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-brand-titleSecondary text-white font-display font-bold text-sm flex items-center justify-center z-10 shadow-md">4</div>
+                                                <div class="bg-brand-bgSecondary/60 border border-brand-titleSecondary/20 rounded-xl p-4 flex-1">
+                                                    <p class="font-display font-bold text-brand-titleSecondary text-sm md:text-base">Validación por el cliente</p>
+                                                    <p class="font-sans text-brand-textMain text-sm mt-1">Aprobación final antes de publicar.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="pt-2">Las decisiones estratégicas se toman analizando tanto criterios estratégicos como resultados obtenidos.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Departamento -->
+                        <div class="reveal-up lg:col-span-2">
+                            <h3 class="font-display text-2xl text-brand-titleSecondary font-bold mb-6 uppercase">Departamento o área donde se realizaron las prácticas</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+                                <div class="space-y-4 font-sans text-base md:text-lg text-brand-textMain leading-relaxed">
+                                    <p>He realizado las prácticas dentro del área de Marketing Digital y Comunicación, en él se encargan de la planificación estratégica, ejecución y seguimiento de las cuentas de los clientes de la agencia.</p>
+                                    <p>Concretamente, he participado en tareas de planificación de redes sociales, incluyendo creación de contenido, edición de vídeo y apoyo al departamento de diseño gráfico, además, tuve la oportunidad de crear calendarios para las diferentes cuentas, definir el tono de marca y adaptar el tono del mensaje según público objetivo y red social.</p>
+                                    <p>Al ser una empresa pequeña he podido trabajar de forma conjunta con todo el equipo, de forma que he podido aprender de todas las diferentes áreas, cuentas, diseño, community management y producción y edición de vídeo.</p>
+                                </div>
+                                <div class="w-full rounded-xl overflow-hidden border border-brand-accent/20 shadow-md reveal-up">
+                                    <img src="images/foto-departamento.jpg" alt="Departamento de Marketing" class="w-full h-full object-cover min-h-[250px]">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </header>
+            </section>
 
-            <!-- 2. Principales Tareas (Ecosistema) -->
+            <!-- 3. Objetivos Iniciales y Plan de Trabajo -->
+            <section class="py-24 px-6 md:px-12 bg-brand-bgSecondary relative z-10 border-b border-brand-accent/10">
+                <div class="max-w-7xl mx-auto">
+                    <h2 class="font-display text-4xl md:text-5xl font-bold mb-16 uppercase border-b border-brand-titleSecondary/20 pb-8 text-brand-titlePrimary reveal-up">Objetivos Iniciales y Plan de Trabajo Previsto</h2>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+
+                        <!-- Objetivos iniciales -->
+                        <div class="reveal-up">
+                            <h3 class="font-display text-2xl text-brand-titleSecondary font-bold mb-6 uppercase">Objetivos iniciales</h3>
+                            <p class="font-sans text-base md:text-lg text-brand-textMain leading-relaxed mb-8">Los objetivos establecidos en mi proyecto formativo al inicio de las prácticas se orientaban al desarrollo de competencias básicas, pero necesarias dentro de una agencia de marketing y comunicación. Se planteaban los siguientes objetivos:</p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-brand-bgPrimary p-4 md:p-5 rounded-lg text-center border border-brand-accent/15 shadow-sm hover:shadow-md transition-all reveal-up" style="animation-delay:0.05s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Adaptación a nuevas situaciones</span></div>
+                                <div class="bg-brand-bgPrimary p-4 md:p-5 rounded-lg text-center border border-brand-accent/15 shadow-sm hover:shadow-md transition-all reveal-up" style="animation-delay:0.1s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Aprendizaje autónomo</span></div>
+                                <div class="bg-brand-bgPrimary p-4 md:p-5 rounded-lg text-center border border-brand-accent/15 shadow-sm hover:shadow-md transition-all reveal-up" style="animation-delay:0.15s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Creatividad</span></div>
+                                <div class="bg-brand-bgPrimary p-4 md:p-5 rounded-lg text-center border border-brand-accent/15 shadow-sm hover:shadow-md transition-all reveal-up" style="animation-delay:0.2s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Organización y planificación</span></div>
+                                <div class="bg-brand-bgPrimary p-4 md:p-5 rounded-lg text-center border border-brand-accent/15 shadow-sm hover:shadow-md transition-all reveal-up" style="animation-delay:0.25s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Motivación por la calidad</span></div>
+                                <div class="bg-brand-bgPrimary p-4 md:p-5 rounded-lg text-center border border-brand-accent/15 shadow-sm hover:shadow-md transition-all reveal-up" style="animation-delay:0.3s"><span class="block font-display font-bold text-sm md:text-base text-brand-titlePrimary">Trabajo en equipo</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Plan de trabajo -->
+                        <div class="reveal-up">
+                            <h3 class="font-display text-2xl text-brand-titleSecondary font-bold mb-6 uppercase">Plan de trabajo previsto inicialmente</h3>
+                            <p class="font-sans text-base md:text-lg text-brand-textMain leading-relaxed mb-8">El plan de trabajo definido en el Proyecto Formativo incluía la participación en distintos departamentos de la agencia, lo que me iba a permitir adquirir una mayor experiencia y visión global de la agencia.</p>
+                            <div class="space-y-4">
+                                <div class="glass rounded-2xl p-6 border border-brand-accent/20 reveal-up" style="animation-delay:0.1s">
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        </div>
+                                        <h4 class="font-display font-bold text-brand-titlePrimary text-base uppercase">Departamento de Social Media</h4>
+                                    </div>
+                                    <p class="font-sans text-sm text-brand-textMain leading-relaxed">Calendarización, propuestas de contenido, programación del contenido, campañas de influencers y KOL’s, búsqueda de referencias.</p>
+                                </div>
+                                <div class="glass rounded-2xl p-6 border border-brand-accent/20 reveal-up" style="animation-delay:0.2s">
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="w-8 h-8 rounded-full bg-brand-titleSecondary flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        </div>
+                                        <h4 class="font-display font-bold text-brand-titlePrimary text-base uppercase">Departamento de Diseño</h4>
+                                    </div>
+                                    <p class="font-sans text-sm text-brand-textMain leading-relaxed">Elaboración de plantillas en Canva, adaptación de diseños, búsqueda de referencias y elaboración de moodboards inspiracionales.</p>
+                                </div>
+                                <div class="glass rounded-2xl p-6 border border-brand-accent/20 reveal-up" style="animation-delay:0.3s">
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="w-8 h-8 rounded-full bg-brand-accent/70 flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                        </div>
+                                        <h4 class="font-display font-bold text-brand-titlePrimary text-base uppercase">Departamento de Edición</h4>
+                                    </div>
+                                    <p class="font-sans text-sm text-brand-textMain leading-relaxed">Trabajo en equipo y gestión de proyectos con el departamento de edición.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Principales Tareas (Ecosistema) -->
             <section class="py-24 px-6 md:px-12 bg-brand-bgPrimary z-10 relative border-y border-brand-accent/10">
                 <div class="max-w-7xl mx-auto">
                     <h2 class="font-display text-4xl md:text-5xl font-bold mb-16 uppercase border-b border-brand-titleSecondary/20 pb-8 text-brand-titleSecondary reveal-up">Principales Tareas</h2>
@@ -350,11 +476,11 @@
                 </div>
             </section>
 
-            <!-- 5. Herramientas y Competencias -->
+            <!-- 5. Herramientas y habilidades -->
             <section class="py-24 px-6 md:px-12 relative z-10 overflow-hidden bg-brand-bgSecondary border-b border-brand-accent/10">
                 <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
                     <div class="lg:w-1/3 reveal-up">
-                        <h2 class="font-display text-4xl md:text-5xl font-bold uppercase mb-6 text-brand-titlePrimary">Herramientas y competencias<br><span class="text-outline">Competencias</span></h2>
+                        <h2 class="font-display text-4xl md:text-5xl font-bold uppercase mb-6 text-brand-titlePrimary">Herramientas y habilidades<br><span class="text-outline">Competencias</span></h2>
                         <p class="font-sans text-brand-textMain mb-8 leading-relaxed text-lg">Conjunto de habilidades técnicas y estratégicas puestas en práctica durante el periodo en la agencia.</p>
                     </div>
                     <div class="lg:w-2/3 grid grid-cols-2 md:grid-cols-3 gap-4 w-full">
@@ -516,8 +642,8 @@
                         <h3 class="font-display font-bold text-2xl text-brand-titleSecondary mb-8 border-b border-brand-accent/20 pb-4">Galería de Ejemplos</h3>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                             <button class="grid-item group relative w-full aspect-[9/16] overflow-hidden rounded-2xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-md hover:shadow-xl cursor-pointer border border-brand-accent/10"
-                                    data-index="0" data-title="Reel Educativo B2B" data-desc="Guion y edición dinámica para mantener la atención explicando servicios corporativos." data-role="Edición (Premiere)" data-src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=1000&auto=format&fit=crop">
-                                <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Video">
+                                    data-index="0" data-title="Reel Educativo B2B" data-desc="Guion y edición dinámica para mantener la atención explicando servicios corporativos." data-role="Edición (Premiere)" data-src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Video">
                                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                                     <div class="w-12 h-12 rounded-full bg-white/90 text-brand-accent flex items-center justify-center pl-1 shadow-lg group-hover:scale-110 transition-transform">
                                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -525,8 +651,8 @@
                                 </div>
                             </button>
                             <button class="grid-item group relative w-full aspect-[9/16] overflow-hidden rounded-2xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-md hover:shadow-xl cursor-pointer border border-brand-accent/10"
-                                    data-index="1" data-title="Campaña Producto" data-desc="Apoyo en grabación y ajuste de ritmo en edición mediante CapCut." data-role="Grabación y Edición" data-src="https://images.unsplash.com/photo-1585644677464-320d57d74dbb?q=80&w=1000&auto=format&fit=crop">
-                                <img src="https://images.unsplash.com/photo-1585644677464-320d57d74dbb?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Video">
+                                    data-index="1" data-title="Campaña Producto" data-desc="Apoyo en grabación y ajuste de ritmo en edición mediante CapCut." data-role="Grabación y Edición" data-src="https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=1000&auto=format&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Video">
                                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                                     <div class="w-12 h-12 rounded-full bg-white/90 text-brand-accent flex items-center justify-center pl-1 shadow-lg group-hover:scale-110 transition-transform">
                                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -534,8 +660,8 @@
                                 </div>
                             </button>
                             <button class="grid-item group relative w-full aspect-[9/16] overflow-hidden rounded-2xl bg-brand-bgPrimary/20 focus:outline-none transition-all shadow-md hover:shadow-xl cursor-pointer border border-brand-accent/10"
-                                    data-index="2" data-title="Cobertura Evento" data-desc="Resumen rápido de evento corporativo optimizado para formato vertical." data-role="Guionización" data-src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=1000&auto=format&fit=crop">
-                                <img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Video">
+                                    data-index="2" data-title="Cobertura Evento" data-desc="Resumen rápido de evento corporativo optimizado para formato vertical." data-role="Guionización" data-src="https://images.unsplash.com/photo-1492724724894-7464c27d0ceb?q=80&w=1000&auto=format&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1492724724894-7464c27d0ceb?q=80&w=500&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Video">
                                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                                     <div class="w-12 h-12 rounded-full bg-white/90 text-brand-accent flex items-center justify-center pl-1 shadow-lg group-hover:scale-110 transition-transform">
                                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -771,13 +897,7 @@
         }
         drawShader();
 
-        // --- Custom Cursor ---
-        const cursorDot = document.getElementById('cursor-dot');
-        const cursorRing = document.getElementById('cursor-ring');
-        window.addEventListener('mousemove', (e) => {
-            cursorDot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-            setTimeout(() => { cursorRing.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`; }, 50);
-        });
+
 
         // --- Lightbox Global Logic ---
         const modal = document.getElementById('lightbox-modal');
